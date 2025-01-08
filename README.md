@@ -25,7 +25,7 @@ For numerical evaluations it is highly recommended to use the lua version which 
 import face_alignment
 from skimage import io
 
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
 
 input = io.imread('../test/assets/aflw-test.jpg')
 preds = fa.get_landmarks(input)
@@ -41,7 +41,7 @@ preds = fa.get_landmarks(input)
 import face_alignment
 from skimage import io
 
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=False)
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.THREE_D, flip_input=False)
 
 input = io.imread('../test/assets/aflw-test.jpg')
 preds = fa.get_landmarks(input)
@@ -53,7 +53,7 @@ preds = fa.get_landmarks(input)
 import face_alignment
 from skimage import io
 
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
 
 preds = fa.get_landmarks_from_directory('../test/assets/')
 ```
@@ -66,20 +66,42 @@ By default the package will use the SFD face detector. However the users can alt
 import face_alignment
 
 # sfd for SFD, dlib for Dlib and folder for existing bounding boxes.
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, face_detector='sfd')
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, face_detector='sfd')
 ```
 
 #### Running on CPU/GPU
 In order to specify the device (GPU or CPU) on which the code will run one can explicitly pass the device flag:
 
 ```python
+import torch
 import face_alignment
 
-# cuda for CUDA
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu')
+# cuda for CUDA, mps for Apple M1/2 GPUs.
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device='cpu')
+
+# running using lower precision
+fa = fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, dtype=torch.bfloat16, device='cuda')
 ```
 
 Please also see the ``examples`` folder
+
+#### Supported face detectors
+
+```python
+
+# dlib (fast, may miss faces)
+model = FaceAlignment(landmarks_type= LandmarksType.TWO_D, face_detector='dlib')
+
+# SFD (likely best results, but slowest)
+model = FaceAlignment(landmarks_type= LandmarksType.TWO_D, face_detector='sfd')
+
+# Blazeface (front camera model)
+model = FaceAlignment(landmarks_type= LandmarksType.TWO_D, face_detector='blazeface')
+
+# Blazeface (back camera model)
+model = FaceAlignment(landmarks_type= LandmarksType.TWO_D, face_detector='blazeface', face_detector_kwargs={'back_model': True})
+
+```
 
 ## Installation
 
